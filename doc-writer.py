@@ -3,7 +3,7 @@
 
 import sys
 
-if len(sys.argv):
+try:
     script = sys.argv[1]
-else:
+except IndexError:
     print('Usage: doc-writer.py [filename]')

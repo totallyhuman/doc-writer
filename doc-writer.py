@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf -8 -*-
 
-import sys
+from argparse import *
 
-try:
-    script = sys.argv[1]
-except IndexError:
-    print('Usage: doc-writer.py [filename]')
+parser = ArgumentParser(description = 'Generate docstrings for a Python '
+                        'script.')
+parser.add_argument('filename', help = 'The name of the script to generate '
+                    'docstrings for.')
+args = parser.parse_args()
+script = args.filename

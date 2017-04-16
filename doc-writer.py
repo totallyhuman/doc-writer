@@ -25,9 +25,10 @@ def find_return_vars(func):
             try:
                 returns.append(j.value.id)
             except AttributeError:
-                returns += [elts.id for elts in j.value.elts]
-            except AttributeError:
-                pass
+                try:
+                    returns += [elts.id for elts in j.value.elts]
+                except AttributeError:
+                    pass
 
     return returns
 

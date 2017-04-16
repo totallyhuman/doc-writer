@@ -19,6 +19,7 @@ def search(n):
             function_name = i.name
             function_args = [arg.arg for arg in i.args.args]
             function_returns = []
+            function_raises = []
 
             for j in i.body:
                 if isinstance(j, ast.Return):
@@ -26,9 +27,12 @@ def search(n):
                         function_returns.append(j.value.id)
                     except AttributeError:
                         function_returns += [elts.id for elts in j.value.elts]
+                if isinstance(j, ast.Raise):
+                    function_raises.append(j.exc.id)
 
             functions.append({'name': function_name, 'args': function_args,
-                              'returns': function_returns})
+                              'returns': function_returns,
+                              'raises': function_raises})
         else:
             try:
                 search(i)
@@ -58,5 +62,11 @@ for f in functions:
         doc += '\nReturns:\n'
         for var in f['returns']:
             doc += '    *{} -- <variable type and description>\n'.format(var)
+
+    if len(f['raises']) > 0:
+        doc += '\nRaises:\n'
+        for exc in f['raises']:
+            doc += '    *{} -- <exception description>\n'.format(exc)
+        doc = doc[:-1]
 
     f['doc'] = doc

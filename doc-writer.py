@@ -19,5 +19,12 @@ with open(script) as f:
         if isinstance(i, ast.FunctionDef):
             function_name = i.name
             function_args = [arg.arg for arg in i.args.args]
+            for j in i.body:
+                if isinstance(j, ast.Return):
+                    try:
+                        function_returns = j.value.id
+                    except AttributeError:
+                        function_returns = [elts.id for elts in j.value.elts]
 
-            functions.append({'name': function_name, 'args': function_args})
+            functions.append({'name': function_name, 'args': function_args,
+                              'returns': function_returns})

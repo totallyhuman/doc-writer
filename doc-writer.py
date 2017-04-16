@@ -49,6 +49,9 @@ def parse_functions(function_nodes):
 
         function['name'] = node.name
         function['args'] = [arg.arg for arg in node.args.args]
+
+        if function['args'][0] == 'self': function['args'].pop(0)
+
         function['returns'] = find_return_vars(node)
         function['raises'] = find_raised_exceptions(node)
 

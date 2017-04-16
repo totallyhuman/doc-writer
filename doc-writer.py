@@ -52,11 +52,11 @@ for f in functions:
     if len(f['args']) > 0:
         doc += '\nPositional arguments:\n'
         for arg in f['args']:
-            doc += '*{} -- <argument type and description>\n'.format(arg)
+            doc += '    *{} -- <argument type and description>\n'.format(arg)
 
     if len(f['returns']) > 0:
         doc += '\nReturns:\n'
         for var in f['returns']:
-            doc += '*{} -- <variable type and description>\n'.format(var)
+            doc += '    *{} -- <variable type and description>\n'.format(var)
 
     f['doc'] = doc

@@ -51,10 +51,10 @@ for f in functions:
             doc += arg + ', '
         doc = doc[:-2]
 
-    doc += '):\n\n<function description>\n'
+    doc += '):\n\n<function description>'
 
     if len(f['args']) > 0:
-        doc += '\nPositional arguments:\n'
+        doc += '\n\nPositional arguments:\n'
         for arg in f['args']:
             doc += '    *{} -- <argument type and description>\n'.format(arg)
 

@@ -14,7 +14,8 @@ script = args.filename
 functions = []
 
 def find_functions(module):
-    function_nodes = [f for f in ast.walk(module) if isinstance(f, ast.FunctionDef)]
+    function_nodes = [f for f in ast.walk(module) if
+                      isinstance(f, ast.FunctionDef)]
     return function_nodes
 
 def find_return_vars(func):
@@ -50,7 +51,8 @@ def parse_functions(function_nodes):
         function['name'] = node.name
         function['args'] = [arg.arg for arg in node.args.args]
 
-        if len(function['args']) and function['args'][0] == 'self': function['args'].pop(0)
+        if len(function['args']) and function['args'][0] == 'self':
+            function['args'].pop(0)
 
         function['returns'] = find_return_vars(node)
         function['raises'] = find_raised_exceptions(node)

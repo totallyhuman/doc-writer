@@ -31,6 +31,15 @@ def find_return_vars(func):
 
     return returns
 
+def find_raised_exceptions(func):
+    raises = []
+
+    for j in ast.walk(func):
+        if isinstance(j, ast.Raise):
+            raises.append(j.exc.id)
+
+    return raises
+
 def parse_functions(function_nodes):
     functions = []
 
@@ -40,6 +49,7 @@ def parse_functions(function_nodes):
         function['name'] = node.name
         function['args'] = [arg.arg for arg in node.args.args]
         function['returns'] = find_return_vars(node)
+        function['raises'] = find_raised_exceptions(node)
 
         functions.append(function)
 
@@ -70,12 +80,10 @@ for f in functions:
         for var in f['returns']:
             doc += '    *{} -- <variable type and description>\n'.format(var)
 
-    """
     if len(f['raises']) > 0:
         doc += '\nRaises:\n'
         for exc in f['raises']:
             doc += '    *{} -- <exception description>\n'.format(exc)
         doc = doc[:-1]
-    """
 
     f['doc'] = doc

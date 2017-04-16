@@ -11,37 +11,34 @@ parser.add_argument('filename', help = 'The name of the script to generate '
 args = parser.parse_args()
 script = args.filename
 
+function_nodes = []
 functions = []
 
-def search(n):
+def find_functions(body):
+    return [f for f in body if isinstance(f, ast.FunctionDef)]
+
+def search(n, function_nodes):
+    function_nodes += find_functions(n.body)
+
     for i in n.body:
-        if isinstance(i, ast.FunctionDef):
-            function_name = i.name
-            function_args = [arg.arg for arg in i.args.args]
-            function_returns = []
-            function_raises = []
+        try:
+            function_nodes += find_functions(i.body)
+        except AttributeError:
+            pass
 
-            for j in i.body:
-                if isinstance(j, ast.Return):
-                    try:
-                        function_returns.append(j.value.id)
-                    except AttributeError:
-                        function_returns += [elts.id for elts in j.value.elts]
-                if isinstance(j, ast.Raise):
-                    function_raises.append(j.exc.id)
+def parse_functions(function_nodes, functions):
+    for node in function_nodes:
+        function = {}
 
-            functions.append({'name': function_name, 'args': function_args,
-                              'returns': function_returns,
-                              'raises': function_raises})
-        else:
-            try:
-                search(i)
-            except AttributeError:
-                pass
+        function['name'] = node.name
+        function['args'] = [arg.arg for arg in node.args.args]
+
+        functions.append(function)
 
 with open(script) as f:
     node = ast.parse(f.read())
-    search(node)
+    search(node, function_nodes)
+    parse_functions(function_nodes, functions)
 
 for f in functions:
     doc = '{}('.format(f['name'])
@@ -58,6 +55,7 @@ for f in functions:
         for arg in f['args']:
             doc += '    *{} -- <argument type and description>\n'.format(arg)
 
+    """
     if len(f['returns']) > 0:
         doc += '\nReturns:\n'
         for var in f['returns']:
@@ -68,5 +66,6 @@ for f in functions:
         for exc in f['raises']:
             doc += '    *{} -- <exception description>\n'.format(exc)
         doc = doc[:-1]
+    """
 
     f['doc'] = doc

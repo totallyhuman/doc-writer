@@ -22,9 +22,32 @@ with open(script) as f:
             for j in i.body:
                 if isinstance(j, ast.Return):
                     try:
-                        function_returns = j.value.id
+                        function_returns = [j.value.id]
                     except AttributeError:
                         function_returns = [elts.id for elts in j.value.elts]
 
             functions.append({'name': function_name, 'args': function_args,
                               'returns': function_returns})
+
+for f in functions:
+    doc = '{}('.format(f['name'])
+
+    if len(f['args']) > 0:
+        for arg in f['args']:
+            doc += arg + ', '
+        doc = doc[:-2]
+
+    doc += '):\n\n<function description>\n'
+
+    if len(f['args']) > 0:
+        doc += '\nPositional arguments:\n'
+        for arg in f['args']:
+            doc += '*{} -- <argument type and description>\n'.format(arg)
+
+    if len(f['returns']) > 0:
+        doc += '\nReturns:\n'
+        for var in f['returns']:
+            doc += '*{} -- <variable type and description>\n'.format(var)
+        doc = doc[:-1]
+
+    f['doc'] = doc

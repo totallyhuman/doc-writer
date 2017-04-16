@@ -11,34 +11,44 @@ parser.add_argument('filename', help = 'The name of the script to generate '
 args = parser.parse_args()
 script = args.filename
 
-function_nodes = []
 functions = []
 
-def find_functions(body):
-    return [f for f in body if isinstance(f, ast.FunctionDef)]
+def find_functions(module):
+    function_nodes = [f for f in ast.walk(module) if isinstance(f, ast.FunctionDef)]
+    return function_nodes
 
-def search(n, function_nodes):
-    function_nodes += find_functions(n.body)
+def find_return_vars(func):
+    returns = []
 
-    for i in n.body:
-        try:
-            function_nodes += find_functions(i.body)
-        except AttributeError:
-            pass
+    for j in ast.walk(func):
+        if isinstance(j, ast.Return):
+            try:
+                returns.append(j.value.id)
+            except AttributeError:
+                returns += [elts.id for elts in j.value.elts]
+            except AttributeError:
+                pass
 
-def parse_functions(function_nodes, functions):
+    return returns
+
+def parse_functions(function_nodes):
+    functions = []
+
     for node in function_nodes:
         function = {}
 
         function['name'] = node.name
         function['args'] = [arg.arg for arg in node.args.args]
+        function['returns'] = find_return_vars(node)
 
         functions.append(function)
 
+    return functions
+
 with open(script) as f:
     node = ast.parse(f.read())
-    search(node, function_nodes)
-    parse_functions(function_nodes, functions)
+    function_nodes = find_functions(node)
+    functions = parse_functions(function_nodes)
 
 for f in functions:
     doc = '{}('.format(f['name'])
@@ -55,12 +65,12 @@ for f in functions:
         for arg in f['args']:
             doc += '    *{} -- <argument type and description>\n'.format(arg)
 
-    """
     if len(f['returns']) > 0:
         doc += '\nReturns:\n'
         for var in f['returns']:
             doc += '    *{} -- <variable type and description>\n'.format(var)
 
+    """
     if len(f['raises']) > 0:
         doc += '\nRaises:\n'
         for exc in f['raises']:

@@ -1,2 +1,2 @@
 # doc-writer
-A docstring writer written in Python.
+A docstring writer for Python files written in Python.

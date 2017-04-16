@@ -13,21 +13,31 @@ script = args.filename
 
 functions = []
 
-with open(script) as f:
-    node = ast.parse(f.read())
-    for i in node.body:
+def search(n):
+    for i in n.body:
         if isinstance(i, ast.FunctionDef):
             function_name = i.name
             function_args = [arg.arg for arg in i.args.args]
+            function_returns = []
+
             for j in i.body:
                 if isinstance(j, ast.Return):
                     try:
-                        function_returns = [j.value.id]
+                        function_returns.append(j.value.id)
                     except AttributeError:
-                        function_returns = [elts.id for elts in j.value.elts]
+                        function_returns += [elts.id for elts in j.value.elts]
 
             functions.append({'name': function_name, 'args': function_args,
                               'returns': function_returns})
+        else:
+            try:
+                search(i)
+            except AttributeError:
+                pass
+
+with open(script) as f:
+    node = ast.parse(f.read())
+    search(node)
 
 for f in functions:
     doc = '{}('.format(f['name'])
@@ -48,6 +58,5 @@ for f in functions:
         doc += '\nReturns:\n'
         for var in f['returns']:
             doc += '*{} -- <variable type and description>\n'.format(var)
-        doc = doc[:-1]
 
     f['doc'] = doc

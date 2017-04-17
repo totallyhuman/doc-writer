@@ -27,6 +27,22 @@ def find_return_vars(func):
     return returns
 
 
+def find_yield_vars(func):
+    yields = []
+
+    for j in ast.walk(func):
+        if isinstance(j, ast.Yield):
+            try:
+                yields.append(j.value.id)
+            except AttributeError:
+                try:
+                    yields += [elts.id for elts in j.value.elts]
+                except AttributeError:
+                    pass
+
+    return yields
+
+
 def find_raised_exceptions(func):
     raises = []
 
@@ -50,6 +66,7 @@ def parse_functions(function_nodes):
             function['args'].pop(0)
 
         function['returns'] = find_return_vars(node)
+        function['yields'] = find_yield_vars(node)
         function['raises'] = find_raised_exceptions(node)
 
         functions.append(function)
@@ -68,19 +85,29 @@ def format_docs(functions):
 
         doc_list.append('):\n\n<function description>')
 
-        if len(f['args']) > 0:
-            doc_list.append('\n\nArguments:\n')
+        if any([len(f['args']), len(f['returns']), len(f['yields']),
+               len(f['raises'])]):
+            doc_list.append('\n')
+
+        if len(f['args']):
+            doc_list.append('\nArguments:\n')
             for arg in f['args']:
                 doc_list.append('    {}: <argument type and description>\n'
                                 .format(arg))
 
-        if len(f['returns']) > 0:
+        if len(f['returns']):
             doc_list.append('\nReturns:\n')
             for var in f['returns']:
                 doc_list.append('    {}: <variable type and description>\n'
                                 .format(var))
 
-        if len(f['raises']) > 0:
+        if len(f['yields']):
+            doc_list.append('\nYields:\n')
+            for var in f['yields']:
+                doc_list.append('    {}: <variable type and description>\n'
+                                .format(var))
+
+        if len(f['raises']):
             doc_list.append('\nRaises:\n')
             for exc in f['raises']:
                 doc_list.append('    {}: <exception description>\n'
@@ -107,6 +134,7 @@ def main():
         functions = parse_functions(function_nodes)
 
     functions = format_docs(functions)
+
 
 if __name__ == '__main__':
     main()

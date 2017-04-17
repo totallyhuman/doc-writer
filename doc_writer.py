@@ -4,15 +4,6 @@
 from argparse import *
 import ast
 
-parser = ArgumentParser(description = 'Generate docstrings for a Python '
-                        'script.')
-parser.add_argument('filename', help = 'The name of the script to generate '
-                    'docstrings for.')
-args = parser.parse_args()
-script = args.filename
-
-functions = []
-
 def find_functions(module):
     function_nodes = [f for f in ast.walk(module) if
                       isinstance(f, ast.FunctionDef)]
@@ -64,12 +55,8 @@ def parse_functions(function_nodes):
 
     return functions
 
-def main():
-    with open(script) as f:
-        node = ast.parse(f.read())
-        function_nodes = find_functions(node)
-        functions = parse_functions(function_nodes)
 
+def format_docs(functions):
     for f in functions:
         doc_list = ['{}('.format(f['name'])]
 
@@ -83,23 +70,41 @@ def main():
         if len(f['args']) > 0:
             doc_list.append('\n\nArguments:\n')
             for arg in f['args']:
-                doc_list.append('    *{}: <argument type and description>\n'
+                doc_list.append('    {}: <argument type and description>\n'
                                 .format(arg))
 
         if len(f['returns']) > 0:
             doc_list.append('\nReturns:\n')
             for var in f['returns']:
-                doc_list.append('    *{}: <variable type and description>\n'
+                doc_list.append('    {}: <variable type and description>\n'
                                 .format(var))
 
         if len(f['raises']) > 0:
             doc_list.append('\nRaises:\n')
             for exc in f['raises']:
-                doc_list.append('    *{}: <exception description>\n'.format(exc))
+                doc_list.append('    {}: <exception description>\n'.format(exc))
             doc_list[-1] = doc_list[-1][:-1]
 
         doc = ''.join(doc_list)
         f['doc'] = doc
+
+    return functions
+
+
+def main():
+    parser = ArgumentParser(description='Generate docstrings for a Python '
+                            'script.')
+    parser.add_argument('filename', help='The name of the script to generate '
+                        'docstrings for.')
+    args = parser.parse_args()
+    script = args.filename
+
+    with open(script) as f:
+        node = ast.parse(f.read())
+        function_nodes = find_functions(node)
+        functions = parse_functions(function_nodes)
+
+    functions = format_docs(functions)
 
 if __name__ == '__main__':
     main()

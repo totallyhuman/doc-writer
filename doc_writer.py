@@ -4,6 +4,7 @@
 from argparse import *
 import ast
 
+
 def find_functions(module):
     function_nodes = [f for f in ast.walk(module) if
                       isinstance(f, ast.FunctionDef)]
@@ -82,7 +83,8 @@ def format_docs(functions):
         if len(f['raises']) > 0:
             doc_list.append('\nRaises:\n')
             for exc in f['raises']:
-                doc_list.append('    {}: <exception description>\n'.format(exc))
+                doc_list.append('    {}: <exception description>\n'
+                                .format(exc))
             doc_list[-1] = doc_list[-1][:-1]
 
         doc = ''.join(doc_list)
@@ -92,10 +94,10 @@ def format_docs(functions):
 
 
 def main():
-    parser = ArgumentParser(description='Generate docstrings for a Python '
+    parser = ArgumentParser(description = 'Generate docstrings for a Python '
                             'script.')
-    parser.add_argument('filename', help='The name of the script to generate '
-                        'docstrings for.')
+    parser.add_argument('filename', help = 'The name of the script to '
+                        'generate docstrings for.')
     args = parser.parse_args()
     script = args.filename
 

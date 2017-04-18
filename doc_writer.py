@@ -2,14 +2,7 @@
 # -*- coding: utf -8 -*-
 
 from argparse import *
-import ast, better_exceptions
-
-
-def diff(a, b):
-    b = set(b)
-    diff = [i for i in a if i not in b]
-
-    return diff
+import ast
 
 
 def find_classes(module):
@@ -156,6 +149,8 @@ def format_docs(functions):
             for exc in f['raises']:
                 doc_list.append('    {}: <exception description>\n'
                                 .format(exc))
+
+        doc_list.append('\n')
 
         doc = ''.join(doc_list)
         f['doc'] = doc

@@ -2,12 +2,38 @@
 # -*- coding: utf -8 -*-
 
 from argparse import *
-import ast
+import ast, better_exceptions
 
 
-def find_functions(module):
-    function_nodes = [f for f in ast.walk(module) if
-                      isinstance(f, ast.FunctionDef)]
+def diff(a, b):
+    b = set(b)
+    diff = [i for i in a if i not in b]
+
+    return diff
+
+
+def find_classes(module):
+    class_nodes = [c for c in ast.walk(module) if isinstance(c, ast.ClassDef)]
+
+    return class_nodes
+
+
+def find_functions(node, class_info = False):
+    function_nodes = []
+
+    if class_info:
+        for f in ast.walk(node):
+            if isinstance(f, ast.FunctionDef):
+                function = {}
+
+                function['node'] = f
+                function['class_name'] =  node.name
+
+                function_nodes.append(function)
+    else:
+        function_nodes = [f for f in ast.walk(node) if
+                          isinstance(f, ast.FunctionDef)]
+
     return function_nodes
 
 
@@ -53,8 +79,25 @@ def find_raised_exceptions(func):
     return raises
 
 
-def parse_functions(function_nodes):
+def parse_functions(class_function_nodes, function_nodes):
+    class_functions = []
     functions = []
+
+    for node in class_function_nodes:
+        function = {}
+
+        function['class_name'] = node['class_name']
+        function['name'] = node['node'].name
+        function['args'] = [arg.arg for arg in node['node'].args.args]
+
+        if len(function['args']) and function['args'][0] == 'self':
+            function['args'].pop(0)
+
+        function['returns'] = find_return_vars(node['node'])
+        function['yields'] = find_yield_vars(node['node'])
+        function['raises'] = find_raised_exceptions(node['node'])
+
+        class_functions.append(function)
 
     for node in function_nodes:
         function = {}
@@ -71,23 +114,24 @@ def parse_functions(function_nodes):
 
         functions.append(function)
 
-    return functions
+    return class_functions, functions
 
 
 def format_docs(functions):
     for f in functions:
-        doc_list = ['{}('.format(f['name'])]
+        try:
+            doc_list = ['{}.'.format(f['class_name'])]
+        except KeyError as e:
+            doc_list = []
 
-        if len(f['args']) > 0:
+        doc_list.append('{}('.format(f['name']))
+
+        if len(f['args']):
             for arg in f['args']:
                 doc_list.append(arg + ', ')
             doc_list[-1] = doc_list[-1][:-2]
 
-        doc_list.append('):\n\n<function description>')
-
-        if any([len(f['args']), len(f['returns']), len(f['yields']),
-               len(f['raises'])]):
-            doc_list.append('\n')
+        doc_list.append('):\n\n<function description>\n')
 
         if len(f['args']):
             doc_list.append('\nArguments:\n')
@@ -112,7 +156,6 @@ def format_docs(functions):
             for exc in f['raises']:
                 doc_list.append('    {}: <exception description>\n'
                                 .format(exc))
-            doc_list[-1] = doc_list[-1][:-1]
 
         doc = ''.join(doc_list)
         f['doc'] = doc
@@ -130,9 +173,23 @@ def main():
 
     with open(script) as f:
         node = ast.parse(f.read())
-        function_nodes = find_functions(node)
-        functions = parse_functions(function_nodes)
+        class_nodes = find_classes(node)
 
+        all_function_nodes = []
+        class_function_nodes = []
+
+        for c in class_nodes:
+            class_function_nodes += find_functions(c, class_info = True)
+
+        all_function_nodes = find_functions(node)
+
+        #print(function_nodes)
+        for x in class_function_nodes:
+            all_function_nodes.remove(x['node'])
+
+        class_functions, functions = parse_functions(class_function_nodes, all_function_nodes)
+
+    class_functions = format_docs(class_functions)
     functions = format_docs(functions)
 
 

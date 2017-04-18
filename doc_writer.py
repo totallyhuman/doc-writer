@@ -178,7 +178,6 @@ def main():
 
         all_function_nodes = find_functions(node)
 
-        #print(function_nodes)
         for x in class_function_nodes:
             all_function_nodes.remove(x['node'])
 

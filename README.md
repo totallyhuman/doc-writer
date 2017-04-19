@@ -13,8 +13,8 @@ No.
 
 ## Why can't it replace me as the human?
 That's because you still have to write descriptions that describe what the
-functions do. Good documentation not only shows what variables are being used
-but how and why they are being used.
+functions do. Good documentation shows not only what variables are being used
+but how and why they are being used as well.
 
 ## Can you give an example?
 Yes.

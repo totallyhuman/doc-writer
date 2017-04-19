@@ -181,7 +181,8 @@ def main():
         for x in class_function_nodes:
             all_function_nodes.remove(x['node'])
 
-        class_functions, functions = parse_functions(class_function_nodes, all_function_nodes)
+        class_functions, functions = parse_functions(class_function_nodes,
+                                                     all_function_nodes)
 
     class_functions = format_docs(class_functions)
     functions = format_docs(functions)

@@ -6,7 +6,8 @@ It automatically generates docstrings for functions in Python scripts.
 
 ## How?
 Using the AST, it finds the arguments, returned/yielded variables and raised
-exceptions.
+exceptions and formats them, mostly following the
+[Google Python Style Guide](https://google.github.io/styleguide/pyguide.html).
 
 ## Can it replace me as the human?
 No.

@@ -27,6 +27,7 @@ class boop(object):
     def braaaap(green, eggs_and = 'answer', ham = 42):
         if green:
             return eggs_and
+
         if ham != 42:
             raise Exception
 ```

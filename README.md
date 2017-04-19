@@ -10,10 +10,7 @@ exceptions and formats them, mostly following the
 [Google Python Style Guide](https://google.github.io/styleguide/pyguide.html).
 
 ## Can it replace me as the human?
-No.
-
-## Why can't it replace me as the human?
-That's because you still have to write descriptions that describe what the
+No, because you still have to write descriptions that describe what the
 functions do. Good documentation shows not only what variables are being used
 but how and why they are being used as well.
 

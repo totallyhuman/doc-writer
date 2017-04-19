@@ -1,4 +1,4 @@
-# doc-writer
+# Docstring Writer
 A docstring writer for Python files written in Python.
 
 ## What?

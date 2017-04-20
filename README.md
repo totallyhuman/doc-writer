@@ -25,12 +25,14 @@ class boop(object):
     def __init__(stuff):
         self.stuff = stuff
 
-    def braaaap(green, eggs_and = 'answer', ham = 42):
+    def braaaap(green, eggs = 'and ham', answer = 42):
         if green:
-            return eggs_and
+            return eggs
 
-        if ham != 42:
-            raise Exception
+        if answer != 42:
+            raise Exception # The answer is always 42.
+
+# Too many references?
 ```
 
 **Output:**
@@ -51,17 +53,17 @@ boop.__init__(stuff):
 See class docstring for details.
 
 
-boop.braaaap(green, eggs_and, ham):
+boop.braaaap(green, eggs, answer):
 
 <function description>
 
 Arguments:
     green: <argument type and description>
-    eggs_and: <argument type and description>
+    eggs: <argument type and description>
     ham: <argument type and description>
 
 Returns:
-    eggs_and: <variable type and description>
+    eggs: <variable type and description>
 
 Raises:
     Exception: <exception description>

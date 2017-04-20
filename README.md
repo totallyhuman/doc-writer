@@ -2,11 +2,12 @@
 A docstring writer for Python files written in Python.
 
 ## What?
-It automatically generates docstrings for functions in Python scripts.
+It automatically generates docstrings for functions and classes in Python
+scripts.
 
 ## How?
-Using the AST, it finds the arguments, returned/yielded variables and raised
-exceptions and formats them, mostly following the
+Using the AST, it finds the arguments, attributes, returned/yielded variables
+and raised exceptions and formats them, mostly following the 
 [Google Python Style Guide](https://google.github.io/styleguide/pyguide.html).
 
 ## Can it replace me as the human?
@@ -21,6 +22,9 @@ Yes.
 **Input:**
 ```python
 class boop(object):
+    def __init__(stuff):
+        self.stuff = stuff
+
     def braaaap(green, eggs_and = 'answer', ham = 42):
         if green:
             return eggs_and
@@ -31,6 +35,20 @@ class boop(object):
 
 **Output:**
 ```
+boop(stuff):
+
+<class description>
+
+Arguments:
+    stuff: <argument type and description>
+
+Attributes:
+    stuff: <attribute type and description>
+
+boop.__init__(stuff):
+
+See class docstring for details.
+
 boop.braaaap(green, eggs_and, ham):
 
 <function description>

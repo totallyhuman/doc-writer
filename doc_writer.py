@@ -105,16 +105,41 @@ def parse_functions(class_function_nodes, function_nodes):
         function['yields'] = find_yield_vars(node)
         function['raises'] = find_raised_exceptions(node)
 
-        functions.append(function)
+        if function['name'] != '__init__':
+            functions.append(function)
 
     return class_functions, functions
 
 
-def format_docs(functions):
+def parse_classes(class_nodes):
+    classes = []
+
+    for node in class_nodes:
+        c = {}
+
+        c['name'] = node.name
+        for i in node.body:
+            try:
+                if isinstance(i, ast.FunctionDef) and i.name == '__init__':
+                    c['args'] = [arg.arg for arg in i.args.args]
+                    c['attr'] = []
+
+                    for j in ast.walk(i):
+                        if isinstance(j, ast.Attribute):
+                            c['attr'].append(j.attr)
+            except AttributeError:
+                pass
+
+        classes.append(c)
+
+    return classes
+
+
+def format_funcs(functions):
     for f in functions:
         try:
             doc_list = ['{}.'.format(f['class_name'])]
-        except KeyError as e:
+        except KeyError:
             doc_list = []
 
         doc_list.append('{}('.format(f['name']))
@@ -158,6 +183,40 @@ def format_docs(functions):
     return functions
 
 
+def format_classes(classes):
+    for c in classes:
+        try:
+            doc_list = ['{}('.format(c['name'])]
+        except KeyError:
+            doc_list = []
+
+        if len(c['args']):
+            for arg in c['args']:
+                doc_list.append(arg + ', ')
+            doc_list[-1] = doc_list[-1][:-2]
+
+        doc_list.append('):\n\n<class description>\n')
+
+        if len(c['args']):
+            doc_list.append('\nArguments:\n')
+            for arg in c['args']:
+                doc_list.append('    {}: <argument type and description>\n'
+                                .format(arg))
+
+        if len(c['attr']):
+            doc_list.append('\nAttributes:\n')
+            for attr in c['attr']:
+                doc_list.append('    {}: <attribute type and description\n'
+                                .format(attr))
+
+        doc_list.append('\n')
+
+        doc = ''.join(doc_list)
+        c['doc'] = doc
+
+    return classes
+
+
 def main():
     parser = ArgumentParser(description = 'Generate docstrings for a Python '
                             'script.')
@@ -184,8 +243,11 @@ def main():
         class_functions, functions = parse_functions(class_function_nodes,
                                                      all_function_nodes)
 
-    class_functions = format_docs(class_functions)
-    functions = format_docs(functions)
+        classes = parse_classes(class_nodes)
+
+    class_functions = format_funcs(class_functions)
+    functions = format_funcs(functions)
+    classes = format_classes(classes)
 
 
 if __name__ == '__main__':

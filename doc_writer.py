@@ -217,6 +217,20 @@ def format_classes(classes):
     return classes
 
 
+def sort_docs(classes, class_functions, functions):
+    docs = []
+    
+    for c in classes:
+        docs.append(c['doc'])
+        
+        for f in class_functions:
+            if c['name'] == f['class_name']:
+                docs.append(f['doc'])
+    
+    for f in functions:
+        docs.append(f['doc'])
+
+
 def main():
     parser = ArgumentParser(description = 'Generate docstrings for a Python '
                             'script.')

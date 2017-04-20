@@ -90,7 +90,10 @@ def parse_functions(class_function_nodes, function_nodes):
         function['yields'] = find_yield_vars(node['node'])
         function['raises'] = find_raised_exceptions(node['node'])
 
-        class_functions.append(function)
+        if function['name'] != '__init__':
+            class_functions.append(function)
+        else:
+            function['doc'] = 'See class docstring for details.\n'
 
     for node in function_nodes:
         function = {}
@@ -105,9 +108,7 @@ def parse_functions(class_function_nodes, function_nodes):
         function['yields'] = find_yield_vars(node)
         function['raises'] = find_raised_exceptions(node)
 
-        if function['name'] != '__init__':
-            functions.append(function)
-
+        functions.append(function)
     return class_functions, functions
 
 
@@ -178,7 +179,8 @@ def format_funcs(functions):
         doc_list.append('\n')
 
         doc = ''.join(doc_list)
-        f['doc'] = doc
+        if 'doc' not in f:
+            f['doc'] = doc
 
     return functions
 
@@ -219,16 +221,18 @@ def format_classes(classes):
 
 def sort_docs(classes, class_functions, functions):
     docs = []
-    
+
     for c in classes:
         docs.append(c['doc'])
-        
+
         for f in class_functions:
             if c['name'] == f['class_name']:
                 docs.append(f['doc'])
-    
+
     for f in functions:
         docs.append(f['doc'])
+
+    return docs
 
 
 def main():
@@ -262,6 +266,8 @@ def main():
     class_functions = format_funcs(class_functions)
     functions = format_funcs(functions)
     classes = format_classes(classes)
+
+    docs = sort_docs(classes, class_functions, functions)
 
 
 if __name__ == '__main__':

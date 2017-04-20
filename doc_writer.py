@@ -90,10 +90,13 @@ def parse_functions(class_function_nodes, function_nodes):
         function['yields'] = find_yield_vars(node['node'])
         function['raises'] = find_raised_exceptions(node['node'])
 
-        if function['name'] != '__init__':
-            class_functions.append(function)
-        else:
-            function['doc'] = 'See class docstring for details.\n'
+        if function['name'] == '__init__':
+            args = ', '.join(function['args'])
+            function['doc'] = ('{0}.__init__({1})\n\nSee class docstring for '
+                               'details.\n\n'.format(function['class_name'],
+                                                     args))
+
+        class_functions.append(function)
 
     for node in function_nodes:
         function = {}
@@ -208,7 +211,7 @@ def format_classes(classes):
         if len(c['attr']):
             doc_list.append('\nAttributes:\n')
             for attr in c['attr']:
-                doc_list.append('    {}: <attribute type and description\n'
+                doc_list.append('    {}: <attribute type and description>\n'
                                 .format(attr))
 
         doc_list.append('\n')

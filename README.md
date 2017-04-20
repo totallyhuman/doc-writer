@@ -7,7 +7,7 @@ scripts.
 
 ## How?
 Using the AST, it finds the arguments, attributes, returned/yielded variables
-and raised exceptions and formats them, mostly following the 
+and raised exceptions and formats them, mostly following the
 [Google Python Style Guide](https://google.github.io/styleguide/pyguide.html).
 
 ## Can it replace me as the human?
@@ -45,9 +45,11 @@ Arguments:
 Attributes:
     stuff: <attribute type and description>
 
+
 boop.__init__(stuff):
 
 See class docstring for details.
+
 
 boop.braaaap(green, eggs_and, ham):
 

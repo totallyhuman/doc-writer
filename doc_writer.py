@@ -24,8 +24,9 @@ def find_functions(node, class_info = False):
 
                 function_nodes.append(function)
     else:
-        function_nodes = [f for f in ast.walk(node) if
-                          isinstance(f, ast.FunctionDef)]
+        function_nodes = [
+            f for f in ast.walk(node) if isinstance(f, ast.FunctionDef)
+        ]
 
     return function_nodes
 
@@ -241,8 +242,9 @@ def sort_docs(classes, class_functions, functions):
 def main():
     parser = ArgumentParser(description = 'Generate docstrings for a Python '
                             'script.')
-    parser.add_argument('filename', help = 'The name of the script to '
-                        'generate docstrings for.')
+    parser.add_argument(
+        'filename',
+        help = 'The name of the script to generate docstrings for.')
     args = parser.parse_args()
     script = args.filename
 

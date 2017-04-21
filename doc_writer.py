@@ -20,7 +20,7 @@ def find_functions(node, class_info = False):
                 function = {}
 
                 function['node'] = f
-                function['class_name'] =  node.name
+                function['class_name'] = node.name
 
                 function_nodes.append(function)
     else:

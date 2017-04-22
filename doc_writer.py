@@ -93,7 +93,7 @@ def parse_functions(class_function_nodes, function_nodes):
 
         if function['name'] == '__init__':
             args = ', '.join(function['args'])
-            function['doc'] = ('\033[1m{0}.__init__({1}):\033[0m\n\nSee class '
+            function['doc'] = ('{0}.__init__({1}):\n\nSee class '
                                'docstring for details.\n'.format(
                                    function['class_name'], args))
 
@@ -143,9 +143,9 @@ def parse_classes(class_nodes):
 def format_funcs(functions):
     for f in functions:
         try:
-            doc_list = ['\033[1m{}.'.format(f['class_name'])]
+            doc_list = ['{}.'.format(f['class_name'])]
         except KeyError:
-            doc_list = ['\033[1m']
+            doc_list = []
 
         doc_list.append('{}('.format(f['name']))
 
@@ -154,7 +154,7 @@ def format_funcs(functions):
                 doc_list.append(arg + ', ')
             doc_list[-1] = doc_list[-1][:-2]
 
-        doc_list.append('):\033[0m\n\n<function description>\n')
+        doc_list.append('):\n\n<function description>\n')
 
         if len(f['args']):
             doc_list.append('\nArguments:\n')
@@ -190,19 +190,19 @@ def format_funcs(functions):
 def format_classes(classes):
     for c in classes:
         try:
-            doc_list = ['\033[1m{}('.format(c['name'])]
+            doc_list = ['{}('.format(c['name'])]
         except KeyError:
-            doc_list = ['\033[1m']
+            doc_list = []
 
         if len(c['args']):
             for arg in c['args']:
                 doc_list.append(arg + ', ')
             doc_list[-1] = doc_list[-1][:-2]
 
-        doc_list.append('):\033[0m\n\n<class description>\n')
+        doc_list.append('):\n\n<class description>\n')
 
         if len(c['args']):
-            doc_list.append('\nArguments:\n')
+            doc_list.append('\nInitializer rguments:\n')
             for arg in c['args']:
                 doc_list.append('    {}: <argument type and description>\n'
                                 .format(arg))

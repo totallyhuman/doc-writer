@@ -202,7 +202,7 @@ def format_classes(classes):
         doc_list.append('):\n\n<class description>\n')
 
         if len(c['args']):
-            doc_list.append('\nInitializer rguments:\n')
+            doc_list.append('\nInitializer arguments:\n')
             for arg in c['args']:
                 doc_list.append('    {}: <argument type and description>\n'
                                 .format(arg))
@@ -241,38 +241,59 @@ def sort_docs(classes, class_functions, functions):
 
 def main():
     parser = ArgumentParser(description = 'Generate docstrings for a Python '
-                            'script.')
+                            'script. Writes output to a specified text file.')
     parser.add_argument(
-        'filename',
-        help = 'The name of the script to generate docstrings for.')
+        'input_file',
+        help = 'The name of the Python script to generate docstrings for.')
+    parser.add_argument(
+        'output_file',
+        help = 'The name of the file to write the docstrings to.')
+
     args = parser.parse_args()
-    script = args.filename
+
+    if not args.input_file.endswith('.py'):
+        print('Input file must be a python script.')
+        return
+
+    if not args.output_file.endswith('.txt'):
+        print('Output file must be a valid text file.')
+        return
+
+    script = args.input_file
+    output = args.output_file
 
     with open(script) as f:
         node = ast.parse(f.read())
-        class_nodes = find_classes(node)
 
-        all_function_nodes = []
-        class_function_nodes = []
+    class_nodes = find_classes(node)
 
-        for c in class_nodes:
-            class_function_nodes += find_functions(c, class_info = True)
+    all_function_nodes = []
+    class_function_nodes = []
 
-        all_function_nodes = find_functions(node)
+    for c in class_nodes:
+        class_function_nodes += find_functions(c, class_info = True)
 
-        for x in class_function_nodes:
-            all_function_nodes.remove(x['node'])
+    all_function_nodes = find_functions(node)
 
-        class_functions, functions = parse_functions(class_function_nodes,
-                                                     all_function_nodes)
+    for x in class_function_nodes:
+        all_function_nodes.remove(x['node'])
 
-        classes = parse_classes(class_nodes)
+    class_functions, functions = parse_functions(class_function_nodes,
+                                                 all_function_nodes)
+
+    classes = parse_classes(class_nodes)
 
     class_functions = format_funcs(class_functions)
     functions = format_funcs(functions)
     classes = format_classes(classes)
 
     docs = sort_docs(classes, class_functions, functions)
+
+    with open(output, mode = 'w') as f:
+        f.write('Docstrings for {}\n'.format(script))
+        f.write('=' * 80 + '\n')
+        for doc in docs:
+            f.write(doc)
 
 
 if __name__ == '__main__':

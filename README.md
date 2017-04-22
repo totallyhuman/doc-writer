@@ -60,7 +60,6 @@ boop.braaaap(green, eggs, answer):
 Arguments:
     green: <argument type and description>
     eggs: <argument type and description>
-    ham: <argument type and description>
 
 Returns:
     eggs: <variable type and description>

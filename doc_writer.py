@@ -223,7 +223,6 @@ def sort_docs(classes, class_functions, functions):
     docs = []
 
     for c in classes:
-        docs.append('=' * 80 + '\n')
         docs.append(c['doc'])
 
         for f in class_functions:
@@ -231,7 +230,7 @@ def sort_docs(classes, class_functions, functions):
                 docs.append('-' * 80 + '\n')
                 docs.append(f['doc'])
 
-    docs.append('=' * 80 + '\n')
+        docs.append('=' * 80 + '\n')
 
     for f in functions:
         docs.append(f['doc'])

@@ -84,7 +84,8 @@ def parse_functions(class_function_nodes, function_nodes):
         function['name'] = node['node'].name
         function['args'] = [arg.arg for arg in node['node'].args.args]
 
-        if len(function['args']) and function['args'][0] == 'self':
+        if len(function['args']) and (function['args'][0] == 'self' or
+                                      function['args'][0] == 'cls'):
             function['args'].pop(0)
 
         function['returns'] = find_return_vars(node['node'])

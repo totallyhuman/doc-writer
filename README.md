@@ -33,26 +33,30 @@ class boop(object):
             raise Exception # The answer is always 42.
 
 # Too many references?
+
+def aaaaa():
+    aaaaaa = 'aaaaaaa'
+    return aaaaaa
 ```
 
 **Output:**
 ```
+Docstrings for boop.py
+================================================================================
 boop(stuff):
 
 <class description>
 
-Arguments:
+Initializer arguments:
     stuff: <argument type and description>
 
 Attributes:
     stuff: <attribute type and description>
-
-
+--------------------------------------------------------------------------------
 boop.__init__(stuff):
 
 See class docstring for details.
-
-
+--------------------------------------------------------------------------------
 boop.braaaap(green, eggs, answer):
 
 <function description>
@@ -60,10 +64,19 @@ boop.braaaap(green, eggs, answer):
 Arguments:
     green: <argument type and description>
     eggs: <argument type and description>
+    answer: <argument type and description>
 
 Returns:
     eggs: <variable type and description>
 
 Raises:
     Exception: <exception description>
+================================================================================
+aaaaa():
+
+<function description>
+
+Returns:
+    aaaaaa: <variable type and description>
+--------------------------------------------------------------------------------
 ```

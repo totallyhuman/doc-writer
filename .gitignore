@@ -87,3 +87,7 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# Testing stuff
+boop.py
+stuff.txt

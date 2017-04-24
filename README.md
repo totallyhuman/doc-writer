@@ -19,7 +19,13 @@ but how and why they are being used as well.
 Yes.
 
 ## ...Give me an example.
+**Running it:**
+
+`$ python3 doc_writer.py boop.py stuff.txt`
+
 **Input:**
+
+*boop.py*
 ```python
 class boop(object):
     def __init__(stuff):
@@ -40,6 +46,8 @@ def aaaaa():
 ```
 
 **Output:**
+
+*stuff.txt*
 ```
 Docstrings for boop.py
 ================================================================================

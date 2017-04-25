@@ -94,8 +94,8 @@ def parse_functions(class_function_nodes, function_nodes):
 
         if function['name'] == '__init__':
             args = ', '.join(function['args'])
-            function['doc'] = ('{0}.__init__({1}):\n\nSee class '
-                               'docstring for details.\n'.format(
+            function['doc'] = ('{0}.__init__({1}):\n\n"""See class '
+                               'docstring for details."""\n'.format(
                                    function['class_name'], args))
 
         class_functions.append(function)
@@ -130,6 +130,9 @@ def parse_classes(class_nodes):
                     for j in ast.walk(i):
                         if isinstance(j, ast.Attribute):
                             c['attr'].append(j.attr)
+                else:
+                    c['args'] = []
+                    c['attr'] = []
             except AttributeError:
                 pass
 
@@ -152,31 +155,37 @@ def format_funcs(functions):
                 doc_list.append(arg + ', ')
             doc_list[-1] = doc_list[-1][:-2]
 
-        doc_list.append('):\n\n<function description>\n')
+        doc_list.append('):\n\n"""<function description>')
 
-        if len(f['args']):
-            doc_list.append('\nArguments:\n')
-            for arg in f['args']:
-                doc_list.append('    {}: <argument type and description>\n'
-                                .format(arg))
+        if any([len(f['args']), len(f['returns']), len(f['yields']),
+                len(f['raises'])]):
+            doc_list.append('\n')
 
-        if len(f['returns']):
-            doc_list.append('\nReturns:\n')
-            for var in f['returns']:
-                doc_list.append('    {}: <variable type and description>\n'
-                                .format(var))
+            if len(f['args']):
+                doc_list.append('\nArguments:\n')
+                for arg in f['args']:
+                    doc_list.append('    {}: <argument type and description>\n'
+                                    .format(arg))
 
-        if len(f['yields']):
-            doc_list.append('\nYields:\n')
-            for var in f['yields']:
-                doc_list.append('    {}: <variable type and description>\n'
-                                .format(var))
+            if len(f['returns']):
+                doc_list.append('\nReturns:\n')
+                for var in f['returns']:
+                    doc_list.append('    {}: <variable type and description>\n'
+                                    .format(var))
 
-        if len(f['raises']):
-            doc_list.append('\nRaises:\n')
-            for exc in f['raises']:
-                doc_list.append('    {}: <exception description>\n'
-                                .format(exc))
+            if len(f['yields']):
+                doc_list.append('\nYields:\n')
+                for var in f['yields']:
+                    doc_list.append('    {}: <variable type and description>\n'
+                                    .format(var))
+
+            if len(f['raises']):
+                doc_list.append('\nRaises:\n')
+                for exc in f['raises']:
+                    doc_list.append('    {}: <exception description>\n'
+                                    .format(exc))
+
+        doc_list.append('"""\n')
 
         doc = ''.join(doc_list)
         if 'doc' not in f:
@@ -197,19 +206,24 @@ def format_classes(classes):
                 doc_list.append(arg + ', ')
             doc_list[-1] = doc_list[-1][:-2]
 
-        doc_list.append('):\n\n<class description>\n')
+        doc_list.append('):\n\n"""<class description>')
 
-        if len(c['args']):
-            doc_list.append('\nInitializer arguments:\n')
-            for arg in c['args']:
-                doc_list.append('    {}: <argument type and description>\n'
-                                .format(arg))
+        if any([len(c['args']), len(c['attr'])]):
+            doc_list.append('\n')
 
-        if len(c['attr']):
-            doc_list.append('\nAttributes:\n')
-            for attr in c['attr']:
-                doc_list.append('    {}: <attribute type and description>\n'
-                                .format(attr))
+            if len(c['args']):
+                doc_list.append('\nInitializer arguments:\n')
+                for arg in c['args']:
+                    doc_list.append('    {}: <argument type and description>\n'
+                                    .format(arg))
+
+            if len(c['attr']):
+                doc_list.append('\nAttributes:\n')
+                for attr in c['attr']:
+                    doc_list.append('    {}: <attribute type and description>\n'
+                                    .format(attr))
+
+        doc_list.append('"""\n')
 
         doc = ''.join(doc_list)
         c['doc'] = doc
@@ -218,22 +232,23 @@ def format_classes(classes):
 
 
 def sort_docs(classes, class_functions, functions):
-    docs = []
+    doc_list = []
 
     for c in classes:
-        docs.append(c['doc'])
+        doc_list.append(c['doc'])
 
         for f in class_functions:
             if c['name'] == f['class_name']:
-                docs.append('-' * 80 + '\n')
-                docs.append(f['doc'])
+                doc_list.append('-' * 80 + '\n')
+                doc_list.append(f['doc'])
 
-        docs.append('=' * 80 + '\n')
+        doc_list.append('=' * 80 + '\n')
 
     for f in functions:
-        docs.append(f['doc'])
-        docs.append('-' * 80 + '\n')
+        doc_list.append(f['doc'])
+        doc_list.append('-' * 80 + '\n')
 
+    docs = ''.join(doc_list)
     return docs
 
 
@@ -290,8 +305,7 @@ def main():
     with open(output, mode = 'w') as f:
         f.write('Docstrings for {}\n'.format(script))
         f.write('=' * 80 + '\n')
-        for doc in docs:
-            f.write(doc)
+        f.write(docs)
 
 
 if __name__ == '__main__':

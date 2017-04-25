@@ -164,25 +164,25 @@ def format_funcs(functions):
             if len(f['args']):
                 doc_list.append('\nArguments:\n')
                 for arg in f['args']:
-                    doc_list.append('    {}: <argument type and description>\n'
+                    doc_list.append('    {} (<type>): <description>\n'
                                     .format(arg))
 
             if len(f['returns']):
                 doc_list.append('\nReturns:\n')
                 for var in f['returns']:
-                    doc_list.append('    {}: <variable type and description>\n'
+                    doc_list.append('    {} (<type>): <description>\n'
                                     .format(var))
 
             if len(f['yields']):
                 doc_list.append('\nYields:\n')
                 for var in f['yields']:
-                    doc_list.append('    {}: <variable type and description>\n'
+                    doc_list.append('    {} (<type>): <description>\n'
                                     .format(var))
 
             if len(f['raises']):
                 doc_list.append('\nRaises:\n')
                 for exc in f['raises']:
-                    doc_list.append('    {}: <exception description>\n'
+                    doc_list.append('    {}: <description>\n'
                                     .format(exc))
 
         doc_list.append('"""\n')
@@ -214,13 +214,13 @@ def format_classes(classes):
             if len(c['args']):
                 doc_list.append('\nInitializer arguments:\n')
                 for arg in c['args']:
-                    doc_list.append('    {}: <argument type and description>\n'
+                    doc_list.append('    {} (<type>): <description>\n'
                                     .format(arg))
 
             if len(c['attr']):
                 doc_list.append('\nAttributes:\n')
                 for attr in c['attr']:
-                    doc_list.append('    {}: <attribute type and description>\n'
+                    doc_list.append('    {} (<type>): <description>\n'
                                     .format(attr))
 
         doc_list.append('"""\n')

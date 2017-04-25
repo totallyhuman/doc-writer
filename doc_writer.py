@@ -157,8 +157,10 @@ def format_funcs(functions):
 
         doc_list.append('):\n\n"""<function description>')
 
-        if any([len(f['args']), len(f['returns']), len(f['yields']),
-                len(f['raises'])]):
+        if any([
+                len(f['args']), len(f['returns']), len(f['yields']),
+                len(f['raises'])
+        ]):
             doc_list.append('\n')
 
             if len(f['args']):

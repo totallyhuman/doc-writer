@@ -31,7 +31,7 @@ class boop(object):
     def __init__(stuff):
         self.stuff = stuff
 
-    def braaaap(green, eggs = 'and ham', answer = 42):
+    def braaaap(green: bool, eggs = 'and ham', answer = 42):
         if green:
             return eggs
 
@@ -53,38 +53,45 @@ Docstrings for boop.py
 ================================================================================
 boop(stuff):
 
-<class description>
+"""<class description>
 
 Initializer arguments:
-    stuff: <argument type and description>
+    stuff (<type>): <description>
 
 Attributes:
-    stuff: <attribute type and description>
+    stuff (<type>): <description>
+"""
 --------------------------------------------------------------------------------
 boop.__init__(stuff):
 
-See class docstring for details.
+"""See class docstring for details."""
 --------------------------------------------------------------------------------
 boop.braaaap(green, eggs, answer):
 
-<function description>
+"""<function description>
 
 Arguments:
-    green: <argument type and description>
-    eggs: <argument type and description>
-    answer: <argument type and description>
+    green (bool): <description>
+    eggs (<type>): <description>
+    answer (<type>): <description>
 
 Returns:
-    eggs: <variable type and description>
+    eggs (<type>): <description>
 
 Raises:
-    Exception: <exception description>
+    Exception: <description>
+"""
 ================================================================================
-aaaaa():
+aaa(aaaa, aaaaa):
 
-<function description>
+"""<function description>
+
+Arguments:
+    aaaa (<type>): <description>
+    aaaaa (<type>): <description>
 
 Returns:
-    aaaaaa: <variable type and description>
+    aaaaaa (<type>): <description>
+"""
 --------------------------------------------------------------------------------
 ```

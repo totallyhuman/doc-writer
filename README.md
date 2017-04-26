@@ -40,8 +40,8 @@ class boop(object):
 
 # Too many references?
 
-def aaaaa():
-    aaaaaa = 'aaaaaaa'
+def aaa(aaaa, aaaaa = 'aaaaa'):
+    aaaaaa = 'aaaaaa'
     return aaaaaa
 ```
 

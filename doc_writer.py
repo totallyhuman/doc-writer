@@ -82,7 +82,18 @@ def parse_functions(class_function_nodes, function_nodes):
 
         function['class_name'] = node['class_name']
         function['name'] = node['node'].name
-        function['args'] = [arg.arg for arg in node['node'].args.args]
+        function['args'] = []
+
+        for arg in node['node'].args.args:
+            argument = {}
+            argument['name'] = arg.arg
+            try:
+                argument['type'] = arg.annotation.id
+            except AttributeError:
+                pass
+
+            function['args'].append(argument)
+
 
         if len(function['args']) and (function['args'][0] == 'self' or
                                       function['args'][0] == 'cls'):
@@ -93,7 +104,7 @@ def parse_functions(class_function_nodes, function_nodes):
         function['raises'] = find_raised_exceptions(node['node'])
 
         if function['name'] == '__init__':
-            args = ', '.join(function['args'])
+            args = ', '.join([arg['name'] for arg in function['args']])
             function['doc'] = ('{0}.__init__({1}):\n\n"""See class '
                                'docstring for details."""\n'.format(
                                    function['class_name'], args))
@@ -104,7 +115,19 @@ def parse_functions(class_function_nodes, function_nodes):
         function = {}
 
         function['name'] = node.name
-        function['args'] = [arg.arg for arg in node.args.args]
+        function['args'] = []
+
+        for arg in node.args.args:
+            argument = {}
+            argument['name'] = arg.arg
+            try:
+                argument['type'] = arg.annotation.id
+            except AttributeError:
+                pass
+
+            function['args'].append(argument)
+
+
         function['returns'] = find_return_vars(node)
         function['yields'] = find_yield_vars(node)
         function['raises'] = find_raised_exceptions(node)
@@ -124,7 +147,18 @@ def parse_classes(class_nodes):
         for i in node.body:
             try:
                 if isinstance(i, ast.FunctionDef) and i.name == '__init__':
-                    c['args'] = [arg.arg for arg in i.args.args]
+                    c['args'] = []
+
+                    for arg in i.args.args:
+                        argument = {}
+                        argument['name'] = arg.arg
+                        try:
+                            argument['type'] = arg.annotation.id
+                        except AttributeError:
+                            pass
+
+                        c['args'].append(argument)
+
                     c['attr'] = []
 
                     for j in ast.walk(i):
@@ -152,7 +186,7 @@ def format_funcs(functions):
 
         if len(f['args']):
             for arg in f['args']:
-                doc_list.append(arg + ', ')
+                doc_list.append(arg['name'] + ', ')
             doc_list[-1] = doc_list[-1][:-2]
 
         doc_list.append('):\n\n"""<function description>')
@@ -166,8 +200,13 @@ def format_funcs(functions):
             if len(f['args']):
                 doc_list.append('\nArguments:\n')
                 for arg in f['args']:
-                    doc_list.append('    {} (<type>): <description>\n'
-                                    .format(arg))
+                    arg_message = '    {0} ({1}): <description>\n'
+                    try:
+                        doc_list.append('    {0} ({1}): <description>\n'.format(
+                            arg['name'], arg['type']))
+                    except KeyError:
+                        doc_list.append('    {0} ({1}): <description>\n'.format(
+                            arg['name'], '<type>'))
 
             if len(f['returns']):
                 doc_list.append('\nReturns:\n')
@@ -205,7 +244,7 @@ def format_classes(classes):
 
         if len(c['args']):
             for arg in c['args']:
-                doc_list.append(arg + ', ')
+                doc_list.append(arg['name'] + ', ')
             doc_list[-1] = doc_list[-1][:-2]
 
         doc_list.append('):\n\n"""<class description>')
@@ -216,8 +255,12 @@ def format_classes(classes):
             if len(c['args']):
                 doc_list.append('\nInitializer arguments:\n')
                 for arg in c['args']:
-                    doc_list.append('    {} (<type>): <description>\n'
-                                    .format(arg))
+                    try:
+                        doc_list.append('    {0} ({1}): <description>\n'.format(
+                            arg['name'], arg['type']))
+                    except KeyError:
+                        doc_list.append('    {0} ({1}): <description>\n'.format(
+                            arg['name'], '<type>'))
 
             if len(c['attr']):
                 doc_list.append('\nAttributes:\n')

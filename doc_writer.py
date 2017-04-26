@@ -307,7 +307,9 @@ def main():
 
     args = parser.parse_args()
 
-    if not args.input_file.endswith('.py'):
+    py_extensions = tuple(['.py', '.py3', '.pyw'])
+
+    if not args.input_file.endswith(py_extensions):
         print('Input file must be a python script.')
         return
 

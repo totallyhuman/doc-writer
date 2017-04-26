@@ -31,6 +31,26 @@ def find_functions(node, class_info = False):
     return function_nodes
 
 
+def find_args(func):
+    args = []
+
+    for arg in func.args.args:
+        argument = {}
+        argument['name'] = arg.arg
+
+        try:
+            argument['type'] = arg.annotation.id
+        except AttributeError:
+            pass
+
+        args.append(argument)
+
+    if len(args) and (args[0] == 'self' or args[0] == 'cls'):
+        args.pop(0)
+
+    return args
+
+
 def find_return_vars(func):
     returns = []
 
@@ -82,23 +102,7 @@ def parse_functions(class_function_nodes, function_nodes):
 
         function['class_name'] = node['class_name']
         function['name'] = node['node'].name
-        function['args'] = []
-
-        for arg in node['node'].args.args:
-            argument = {}
-            argument['name'] = arg.arg
-            try:
-                argument['type'] = arg.annotation.id
-            except AttributeError:
-                pass
-
-            function['args'].append(argument)
-
-
-        if len(function['args']) and (function['args'][0] == 'self' or
-                                      function['args'][0] == 'cls'):
-            function['args'].pop(0)
-
+        function['args'] = find_args(node['node'])
         function['returns'] = find_return_vars(node['node'])
         function['yields'] = find_yield_vars(node['node'])
         function['raises'] = find_raised_exceptions(node['node'])
@@ -115,19 +119,7 @@ def parse_functions(class_function_nodes, function_nodes):
         function = {}
 
         function['name'] = node.name
-        function['args'] = []
-
-        for arg in node.args.args:
-            argument = {}
-            argument['name'] = arg.arg
-            try:
-                argument['type'] = arg.annotation.id
-            except AttributeError:
-                pass
-
-            function['args'].append(argument)
-
-
+        function['args'] = find_args(node)
         function['returns'] = find_return_vars(node)
         function['yields'] = find_yield_vars(node)
         function['raises'] = find_raised_exceptions(node)
@@ -153,6 +145,7 @@ def parse_classes(class_nodes):
                     for arg in i.args.args:
                         argument = {}
                         argument['name'] = arg.arg
+
                         try:
                             argument['type'] = arg.annotation.id
                         except AttributeError:

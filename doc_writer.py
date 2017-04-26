@@ -144,11 +144,12 @@ def parse_classes(class_nodes):
         c = {}
 
         c['name'] = node.name
+        c['args'] = []
+        c['attr'] = []
+
         for i in node.body:
             try:
                 if isinstance(i, ast.FunctionDef) and i.name == '__init__':
-                    c['args'] = []
-
                     for arg in i.args.args:
                         argument = {}
                         argument['name'] = arg.arg
@@ -164,9 +165,6 @@ def parse_classes(class_nodes):
                     for j in ast.walk(i):
                         if isinstance(j, ast.Attribute):
                             c['attr'].append(j.attr)
-                else:
-                    c['args'] = []
-                    c['attr'] = []
             except AttributeError:
                 pass
 

@@ -21,14 +21,16 @@ Yes.
 ## ...Give me an example.
 **Running it:**
 
-`$ python3 doc_writer.py boop.py stuff.txt`
+```
+$ python3 doc_writer.py boop.py stuff.txt
+```
 
 **Input:**
 
 *boop.py*
 ```python
 class boop(object):
-    
+
     def __init__(stuff):
         self.stuff = stuff
 

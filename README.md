@@ -28,6 +28,7 @@ Yes.
 *boop.py*
 ```python
 class boop(object):
+    
     def __init__(stuff):
         self.stuff = stuff
 
@@ -36,7 +37,8 @@ class boop(object):
             return eggs
 
         if answer != 42:
-            raise Exception # The answer is always 42.
+            raise Exception  # The answer is always 42.
+
 
 # Too many references?
 

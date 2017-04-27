@@ -6,8 +6,9 @@ It automatically generates docstrings for functions and classes in Python
 scripts.
 
 ## How?
-Using the AST, it finds the arguments, attributes, returned/yielded variables
-and raised exceptions and formats them, mostly following the
+Using the AST (*Abstract Syntax Tree*), it finds the arguments, attributes,
+returned/yielded variables and raised exceptions and formats them, mostly
+following the
 [Google Python Style Guide](https://google.github.io/styleguide/pyguide.html).
 
 ## Can it replace me as the human?
@@ -31,10 +32,10 @@ $ python3 doc_writer.py boop.py stuff.txt
 ```python
 class boop(object):
 
-    def __init__(stuff):
+    def __init__(self, stuff):
         self.stuff = stuff
 
-    def braaaap(green: bool, eggs = 'and ham', answer = 42):
+    def braaaap(self, green: bool, eggs = 'and ham', answer = 42):
         if green:
             return eggs
 

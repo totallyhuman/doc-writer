@@ -260,11 +260,11 @@ def format_classes(classes):
                 doc_list.append('\nInitializer arguments:\n')
                 for arg in class_['args']:
                     try:
-                        doc_list.append('    {0} ({1}): <description>\n'.format(
-                            arg['name'], arg['type']))
+                        doc_list.append('    {0} ({1}): <description>\n'
+                                        .format(arg['name'], arg['type']))
                     except KeyError:
-                        doc_list.append('    {0} ({1}): <description>\n'.format(
-                            arg['name'], '<type>'))
+                        doc_list.append('    {0} ({1}): <description>\n'
+                                        .format(arg['name'], '<type>'))
 
             if len(class_['attr']):
                 doc_list.append('\nAttributes:\n')

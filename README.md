@@ -56,7 +56,7 @@ def aaa(aaaa, aaaaa = 'aaaaa'):
 ```
 Docstrings for boop.py
 ================================================================================
-boop(stuff):
+boop(stuff) at line 1:
 
 """<class description>
 
@@ -67,11 +67,11 @@ Attributes:
     stuff (<type>): <description>
 """
 --------------------------------------------------------------------------------
-boop.__init__(stuff):
+boop.__init__(stuff) at line 3:
 
 """See class docstring for details."""
 --------------------------------------------------------------------------------
-boop.braaaap(green, eggs, answer):
+boop.braaaap(green, eggs, answer) at line 6:
 
 """<function description>
 
@@ -87,7 +87,7 @@ Raises:
     Exception: <description>
 """
 ================================================================================
-aaa(aaaa, aaaaa):
+aaa(aaaa, aaaaa) at line 16:
 
 """<function description>
 

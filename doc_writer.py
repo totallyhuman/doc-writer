@@ -103,6 +103,7 @@ def parse_functions(class_function_nodes, function_nodes):
 
         function['class_name'] = node['class_name']
         function['name'] = node['node'].name
+        function['lineno'] = node['node'].lineno
         function['args'] = find_args(node['node'])
         function['returns'] = find_return_vars(node['node'])
         function['yields'] = find_yield_vars(node['node'])
@@ -110,9 +111,10 @@ def parse_functions(class_function_nodes, function_nodes):
 
         if function['name'] == '__init__':
             args = ', '.join([arg['name'] for arg in function['args']])
-            function['doc'] = ('{0}.__init__({1}):\n\n"""See class '
-                               'docstring for details."""\n'.format(
-                                   function['class_name'], args))
+            function['doc'] = ('{0}.__init__({1}) at line {2}:\n\n"""See class'
+                               ' docstring for details."""\n'.format(
+                                   function['class_name'], args,
+                                   node['node'].lineno))
 
         class_functions.append(function)
 
@@ -120,6 +122,7 @@ def parse_functions(class_function_nodes, function_nodes):
         function = {}
 
         function['name'] = node.name
+        function['lineno'] = node.lineno
         function['args'] = find_args(node)
         function['returns'] = find_return_vars(node)
         function['yields'] = find_yield_vars(node)
@@ -137,6 +140,7 @@ def parse_classes(class_nodes):
         class_ = {}
 
         class_['name'] = node.name
+        class_['lineno'] = node.lineno
         class_['args'] = []
         class_['attr'] = []
 
@@ -186,7 +190,8 @@ def format_funcs(functions):
                 doc_list.append(arg['name'] + ', ')
             doc_list[-1] = doc_list[-1][:-2]
 
-        doc_list.append('):\n\n"""<function description>')
+        doc_list.append(') at line {}:\n\n"""<function description>'
+                        .format(func['lineno']))
 
         if any([
                 len(func['args']), len(func['returns']), len(func['yields']),
@@ -243,7 +248,8 @@ def format_classes(classes):
                 doc_list.append(arg['name'] + ', ')
             doc_list[-1] = doc_list[-1][:-2]
 
-        doc_list.append('):\n\n"""<class description>')
+        doc_list.append(') at line {}:\n\n"""<class description>'
+                        .format(class_['lineno']))
 
         if any([len(class_['args']), len(class_['attr'])]):
             doc_list.append('\n')

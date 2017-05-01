@@ -111,10 +111,10 @@ def parse_functions(class_function_nodes, function_nodes):
 
         if function['name'] == '__init__':
             args = ', '.join([arg['name'] for arg in function['args']])
-            function['doc'] = ('{0}.__init__({1}) at line {2}:\n\n"""See class'
+            function['doc'] = ('line {0}, {1}.__init__({2}):\n\n"""See class'
                                ' docstring for details."""\n'.format(
-                                   function['class_name'], args,
-                                   node['node'].lineno))
+                                   node['node'].lineno,
+                                   function['class_name'], args))
 
         class_functions.append(function)
 
@@ -179,9 +179,10 @@ def parse_classes(class_nodes):
 def format_funcs(functions):
     for func in functions:
         try:
-            doc_list = ['{}.'.format(func['class_name'])]
+            doc_list = ['line {0}, {1}.'.format(func['lineno'],
+                                                func['class_name'])]
         except KeyError:
-            doc_list = []
+            doc_list = ['line {}, '.format(func['lineno'])]
 
         doc_list.append('{}('.format(func['name']))
 
@@ -190,8 +191,7 @@ def format_funcs(functions):
                 doc_list.append(arg['name'] + ', ')
             doc_list[-1] = doc_list[-1][:-2]
 
-        doc_list.append(') at line {}:\n\n"""<function description>'
-                        .format(func['lineno']))
+        doc_list.append('):\n\n"""<function description>')
 
         if any([
                 len(func['args']), len(func['returns']), len(func['yields']),
@@ -239,16 +239,17 @@ def format_funcs(functions):
 def format_classes(classes):
     for class_ in classes:
         try:
-            doc_list = ['{}('.format(class_['name'])]
+            doc_list = ['line {0}, {1}('.format(class_['lineno'],
+                                                class_['name'])]
         except KeyError:
-            doc_list = []
+            doc_list = ['line {}, '.format(class_['lineno'])]
 
         if len(class_['args']):
             for arg in class_['args']:
                 doc_list.append(arg['name'] + ', ')
             doc_list[-1] = doc_list[-1][:-2]
 
-        doc_list.append(') at line {}:\n\n"""<class description>'
+        doc_list.append('):\n\n"""<class description>'
                         .format(class_['lineno']))
 
         if any([len(class_['args']), len(class_['attr'])]):

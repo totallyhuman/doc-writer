@@ -179,8 +179,9 @@ def parse_classes(class_nodes):
 def format_funcs(functions):
     for func in functions:
         try:
-            doc_list = ['line {0}, {1}.'.format(func['lineno'],
-                                                func['class_name'])]
+            doc_list = [
+                'line {0}, {1}.'.format(func['lineno'], func['class_name'])
+            ]
         except KeyError:
             doc_list = ['line {}, '.format(func['lineno'])]
 
@@ -203,11 +204,11 @@ def format_funcs(functions):
                 doc_list.append('\nArguments:\n')
                 for arg in func['args']:
                     try:
-                        doc_list.append('    {0} ({1}): <description>\n'.format(
-                            arg['name'], arg['type']))
+                        doc_list.append('    {0} ({1}): <description>\n'
+                                        .format(arg['name'], arg['type']))
                     except KeyError:
-                        doc_list.append('    {0} ({1}): <description>\n'.format(
-                            arg['name'], '<type>'))
+                        doc_list.append('    {0} ({1}): <description>\n'
+                                        .format(arg['name'], '<type>'))
 
             if len(func['returns']):
                 doc_list.append('\nReturns:\n')
@@ -224,8 +225,7 @@ def format_funcs(functions):
             if len(func['raises']):
                 doc_list.append('\nRaises:\n')
                 for exc in func['raises']:
-                    doc_list.append('    {}: <description>\n'
-                                    .format(exc))
+                    doc_list.append('    {}: <description>\n'.format(exc))
 
         doc_list.append('"""\n')
 
@@ -239,8 +239,9 @@ def format_funcs(functions):
 def format_classes(classes):
     for class_ in classes:
         try:
-            doc_list = ['line {0}, {1}('.format(class_['lineno'],
-                                                class_['name'])]
+            doc_list = [
+                'line {0}, {1}('.format(class_['lineno'], class_['name'])
+            ]
         except KeyError:
             doc_list = ['line {}, '.format(class_['lineno'])]
 

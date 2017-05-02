@@ -250,8 +250,7 @@ def format_classes(classes):
                 doc_list.append(arg['name'] + ', ')
             doc_list[-1] = doc_list[-1][:-2]
 
-        doc_list.append('):\n\n"""<class description>'
-                        .format(class_['lineno']))
+        doc_list.append('):\n\n"""<class description>')
 
         if any([len(class_['args']), len(class_['attr'])]):
             doc_list.append('\n')
